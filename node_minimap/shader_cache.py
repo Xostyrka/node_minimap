@@ -4,7 +4,7 @@ from typing import Dict, List
 from mathutils import Vector as V
 from ..shared.helpers import get_active_tree, get_alt_node_tree_name, vec_divide
 from ..shared.functions import draw_lines_from_quads_2d_batch, draw_quads_2d_batch, get_batch_from_quads_2d,\
-    get_batch_lines_from_quads_2d, get_node_area, get_node_color, get_node_loc, get_prefs
+    get_batch_lines_from_quads_2d, get_node_area, get_node_color, get_node_loc, get_prefs, get_region
 from .minimap_functions import get_map_area, get_node_rect
 """
 The caching system makes understanding how the minimap drawing works quite a lot harder, so if you want to do that,
@@ -72,7 +72,9 @@ class AreaCache():
         self.all_nodes: List[NodeCache]
         self.area_name = str(area)
         # get size (regions[0]) minus the n-panel (regions[1])
-        self.region_size = V((area.regions[0].width - area.regions[1].width, area.regions[0].height))
+        # self.region_size = V((area.regions[0].width - area.regions[1].width, area.regions[0].height))
+        region = get_region(area, 'WINDOW')
+        self.region_size = V((region.width, region.height))
         self.update_areas(context, force=True)
         self.current_node_tree_name = self.node_tree.name
         self.tag_update = False
@@ -84,7 +86,9 @@ class AreaCache():
         (the rectangles representing local node space and minimap space respectively), along with region size and scale
         (The scale factor between the node and map areas)"""
         # get size (regions[0]) minus the n-panel (regions[1])
-        current_size = V((self.area.regions[0].width - self.area.regions[1].width, self.area.regions[0].height))
+        # current_size = V((self.area.regions[0].width - self.area.regions[1].width, self.area.regions[0].height))
+        region = get_region(self.area, 'WINDOW')
+        current_size = V((region.width, region.height))
         if force or self.region_size != current_size:
             self.node_area = get_node_area(self.node_tree)
             self.map_area = get_map_area(context, self.area, self.node_area)

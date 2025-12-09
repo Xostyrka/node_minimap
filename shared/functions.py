@@ -334,3 +334,9 @@ def get_area(self, context) -> Area:
 def get_prefs(context) -> NodeExtrasPrefs:
     """Return the addon preferences"""
     return context.preferences.addons[__package__.split(".")[0]].preferences
+def get_region(area, region_type):
+    """Get the region of the given type from the area"""
+    for region in area.regions:
+        if region.type == region_type:
+            return region
+    return None

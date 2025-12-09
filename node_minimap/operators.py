@@ -1,6 +1,6 @@
 import bpy
 from mathutils import Vector as V
-from ..shared.functions import get_area, get_prefs
+from ..shared.functions import get_area, get_prefs, get_region
 from .minimap_functions import get_shader_cache
 from .draw_handlers import draw_callback_px, handler_create
 from .shader_cache import ShaderCache
@@ -112,7 +112,8 @@ class MINIMAP_OT_DrawAreaMinimap(bpy.types.Operator):
             if on_minimap and event.value != "RELEASE":
                 # Check for a double click by seeing if there is another mouse click in the most recent events
                 if event.type in self.prev_event_types:
-                    with context.temp_override(area=area, space=area.spaces[0], region=area.regions[3]):
+                    region = get_region(area, 'WINDOW')
+                    with context.temp_override(area=area, space=area.spaces[0], region=region):
                         bpy.ops.node.view_all()
                 context.window.cursor_modal_set("SCROLL_XY")
                 self.is_panning = True
@@ -136,7 +137,8 @@ class MINIMAP_OT_DrawAreaMinimap(bpy.types.Operator):
                             for n in node.id_data.nodes:
                                 n.select = False
                             node.select = True
-                            with context.temp_override(area=area, space=area.spaces[0], region=area.regions[3]):
+                            region = get_region(area, 'WINDOW')
+                            with context.temp_override(area=area, space=area.spaces[0], region=region):
                                 bpy.ops.node.view_selected("EXEC_DEFAULT")
                             break
 
@@ -153,7 +155,8 @@ class MINIMAP_OT_DrawAreaMinimap(bpy.types.Operator):
             delta = self.mouse_pos - self.prev_mouse_pos
             multiplier = 1 + (1 - prefs.size)
             delta *= multiplier * (self.map_area.size.x / self.view_area.size.x)
-            with context.temp_override(area=area, space=area.spaces[0], region=area.regions[3]):
+            region = get_region(area, 'WINDOW')
+            with context.temp_override(area=area, space=area.spaces[0], region=region):
                 bpy.ops.view2d.pan(deltax=int(delta.x), deltay=int(delta.y))
             return {'RUNNING_MODAL'}
         else:

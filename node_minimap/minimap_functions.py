@@ -1,7 +1,7 @@
 from __future__ import annotations
 from mathutils import Vector as V
 from ..shared.helpers import Rectangle, vec_lerp, vec_multiply
-from ..shared.functions import get_prefs, pos_to_fac, get_node_dims, draw_lines_from_quad_2d
+from ..shared.functions import get_prefs, pos_to_fac, get_node_dims, draw_lines_from_quad_2d, get_region
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 
 def get_map_area(context, area, node_area) -> Rectangle:
     """Returns a rectangle representing the size, shape and position of the minimap box"""
-    region = area.regions[3]
+    region = get_region(area, 'WINDOW')
     # We need to take into account the size of the header
-    region_height = region.height - (area.regions[0].height / 2)
+    # region_height = region.height - (area.regions[0].height / 2)
     region_height = region.height
 
     prefs = get_prefs(context)

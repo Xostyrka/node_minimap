@@ -50,7 +50,10 @@ def handler_create(self: MINIMAP_OT_InitDrawOperators, context: bpy.types.Contex
 
 def draw_callback_px(self: MINIMAP_OT_DrawAreaMinimap, context: bpy.types.Context):
     """Called by every operator when there's a redraw"""
-    area = get_area(self, context)
+    try:
+        area = get_area(self, context)
+    except ReferenceError:
+        return
     # the operator context.area remains the same even when the actual context is updated
     if context.area != area:
         # This filters out calls from operators that arent in the correct area,
